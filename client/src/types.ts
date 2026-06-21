@@ -32,7 +32,6 @@ export interface WeatherCheckpoint {
   estimatedArrivalTime: string;
   temperature: number;
   precipitationProbability: number;
-  weatherCode: number;
   condition: string;
   riskLevel: "safe" | "possible" | "likely" | "severe";
   advice: string;

@@ -1,7 +1,7 @@
 interface RiskArgs {
   precipitationProbability: number;
   rainSensitivity: "low" | "medium" | "high";
-  weatherCode: number;
+  condition: string;
 }
 
 interface SummaryArgs {
@@ -28,9 +28,9 @@ const severityRank = {
 export function getRiskLevel({
   precipitationProbability,
   rainSensitivity,
-  weatherCode
+  condition
 }: RiskArgs): "safe" | "possible" | "likely" | "severe" {
-  if ([95, 96, 99].includes(weatherCode)) {
+  if (/thunderstorm|t-storm|storm/i.test(condition)) {
     return "severe";
   }
 

@@ -9,7 +9,10 @@ import {
   getDrivingRoute
 } from "../utils/openRouteService.js";
 import { createCheckpoints } from "../utils/checkpoints.js";
-import { getForecastForTime } from "../utils/openMeteo.js";
+import {
+  getForecastForTime,
+  OutsideUnitedStatesError
+} from "../utils/nws.js";
 import { getWeatherConditionLabel } from "../utils/weatherCodes.js";
 
 interface TripRequestBody {
@@ -62,11 +65,11 @@ tripRouter.post("/", async (request, response, next) => {
     }
 
     const forecastWindowEnd = new Date();
-    forecastWindowEnd.setUTCDate(forecastWindowEnd.getUTCDate() + 16);
+    forecastWindowEnd.setUTCDate(forecastWindowEnd.getUTCDate() + 7);
     if (departureDate > forecastWindowEnd) {
       response.status(400).json({
         error:
-          "departureTime is beyond Open-Meteo's forecast window. Choose a trip within the next 16 days."
+          "departureTime is beyond the National Weather Service hourly forecast window. Choose a trip within the next 7 days."
       });
       return;
     }
@@ -85,7 +88,17 @@ tripRouter.post("/", async (request, response, next) => {
       totalDurationMinutes: route.totalDurationMinutes
     });
 
-    const enrichedCheckpoints = [];
+    const enrichedCheckpoints: Array<{
+      lat: number;
+      lng: number;
+      distanceMiles: number;
+      estimatedArrivalTime: string;
+      temperature: number;
+      precipitationProbability: number;
+      condition: string;
+      riskLevel: "safe" | "possible" | "likely" | "severe";
+      advice: string;
+    }> = [];
 
     for (const checkpoint of checkpoints) {
       const forecast = await getForecastForTime(
@@ -97,22 +110,19 @@ tripRouter.post("/", async (request, response, next) => {
       const riskLevel = getRiskLevel({
         precipitationProbability: forecast.precipitationProbability,
         rainSensitivity,
-        weatherCode: forecast.weatherCode
+        condition: forecast.condition
       });
 
-      const condition = getWeatherConditionLabel(forecast.weatherCode);
+      const condition = getWeatherConditionLabel(forecast.condition);
 
       enrichedCheckpoints.push({
         ...checkpoint,
         temperature: forecast.temperature,
         precipitationProbability: forecast.precipitationProbability,
-        weatherCode: forecast.weatherCode,
         condition,
         riskLevel,
         advice: getCheckpointAdvice(riskLevel)
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 250));
     }
 
     response.json({
@@ -127,6 +137,11 @@ tripRouter.post("/", async (request, response, next) => {
       checkpoints: enrichedCheckpoints
     });
   } catch (error) {
+    if (error instanceof OutsideUnitedStatesError) {
+      response.status(400).json({ error: error.message });
+      return;
+    }
+
     next(error);
   }
 });

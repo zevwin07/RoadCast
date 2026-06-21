@@ -10,7 +10,7 @@ RoadCast is a road trip weather planner that checks forecast conditions along a 
 - OpenStreetMap tiles
 - Node + Express
 - OpenRouteService for geocoding and directions
-- Open-Meteo for forecasts
+- National Weather Service API for forecasts
 
 ## Project Structure
 
@@ -31,7 +31,7 @@ server/
     trip.ts
   utils/
     checkpoints.ts
-    openMeteo.ts
+    nws.ts
     openRouteService.ts
     risk.ts
     weatherCodes.ts
@@ -45,7 +45,7 @@ Create a root `.env` file:
 OPENROUTESERVICE_API_KEY=your_key_here
 ```
 
-Open-Meteo does not require an API key.
+The National Weather Service API does not require an API key, but it only covers the United States.
 
 ## Setup
 
@@ -156,7 +156,6 @@ Response shape:
       "estimatedArrivalTime": "2026-06-21T15:10:00.000Z",
       "temperature": 82,
       "precipitationProbability": 45,
-      "weatherCode": 3,
       "condition": "Cloudy",
       "riskLevel": "possible",
       "advice": "Rain is possible around this part of the drive."
@@ -167,10 +166,13 @@ Response shape:
 
 ## Notes
 
+- U.S. routes only. If a route leaves National Weather Service coverage, RoadCast returns a friendly message explaining that only United States trips are supported.
 - Checkpoints are generated from the route geometry at the chosen spacing, with the destination always included as the final checkpoint.
 - Arrival times are estimated proportionally from the full route duration returned by OpenRouteService.
+- Each checkpoint is resolved through the NWS `/points/{lat},{lon}` endpoint to determine its forecast grid and hourly forecast URL.
+- Hourly NWS forecast responses are cached by grid ID for 30 minutes, so multiple checkpoints in the same grid reuse the same forecast payload.
 - Risk scoring rules:
-  - `severe` when Open-Meteo returns thunderstorm codes `95`, `96`, or `99`
+  - `severe` when the hourly forecast condition indicates thunderstorms or storms
   - `likely` rain at `70%+` for low sensitivity, `50%+` for medium, `30%+` for high
   - `possible` rain starts at half the likely threshold
   - otherwise `safe`

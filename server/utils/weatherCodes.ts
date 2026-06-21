@@ -1,30 +1,50 @@
-export function getWeatherConditionLabel(weatherCode: number) {
-  if (weatherCode === 0) {
-    return "Sunny";
-  }
+export function getWeatherConditionLabel(forecastText: string) {
+  const normalized = forecastText.toLowerCase();
 
-  if ([1, 2].includes(weatherCode)) {
-    return "Partly Cloudy";
-  }
-
-  if (weatherCode === 3 || [45, 48].includes(weatherCode)) {
-    return weatherCode === 3 ? "Cloudy" : "Foggy";
-  }
-
-  if ([51, 53, 55, 56, 57].includes(weatherCode)) {
-    return "Drizzle";
-  }
-
-  if ([61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
-    return "Rain";
-  }
-
-  if ([95, 96, 99].includes(weatherCode)) {
+  if (
+    normalized.includes("thunderstorm") ||
+    normalized.includes("t-storm") ||
+    normalized.includes("storm")
+  ) {
     return "Storm";
   }
 
-  if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) {
+  if (normalized.includes("snow") || normalized.includes("sleet")) {
     return "Snow";
+  }
+
+  if (normalized.includes("drizzle")) {
+    return "Drizzle";
+  }
+
+  if (normalized.includes("rain") || normalized.includes("showers")) {
+    return "Rain";
+  }
+
+  if (
+    normalized.includes("fog") ||
+    normalized.includes("haze") ||
+    normalized.includes("mist")
+  ) {
+    return "Foggy";
+  }
+
+  if (
+    normalized.includes("partly cloudy") ||
+    normalized.includes("partly sunny") ||
+    normalized.includes("mostly sunny") ||
+    normalized.includes("mostly cloudy") ||
+    normalized.includes("mostly clear")
+  ) {
+    return "Partly Cloudy";
+  }
+
+  if (normalized.includes("cloudy") || normalized.includes("overcast")) {
+    return "Cloudy";
+  }
+
+  if (normalized.includes("sunny") || normalized.includes("clear")) {
+    return "Sunny";
   }
 
   return "Unknown";
