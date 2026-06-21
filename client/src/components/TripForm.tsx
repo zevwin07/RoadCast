@@ -115,7 +115,9 @@ function AutocompleteInput({
 
   return (
     <label className="space-y-2">
-      <span className="text-sm font-semibold text-slate-200">{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+        {label}
+      </span>
       <div className="relative">
         <input
           required
@@ -164,7 +166,7 @@ function AutocompleteInput({
               setActiveIndex(-1);
             }
           }}
-          className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
+          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
           placeholder={placeholder}
           autoComplete="off"
           role="combobox"
@@ -174,7 +176,7 @@ function AutocompleteInput({
         />
 
         {loadingSuggestions && value.trim().length >= 3 ? (
-          <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300">
+          <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400">
             Searching...
           </div>
         ) : null}
@@ -182,7 +184,7 @@ function AutocompleteInput({
         {open && suggestions.length > 0 ? (
           <div
             id={listId}
-            className="absolute z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-2xl backdrop-blur"
+            className="absolute z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
             role="listbox"
           >
             {suggestions.map((suggestion, index) => (
@@ -195,15 +197,15 @@ function AutocompleteInput({
                 }}
                 className={`flex w-full flex-col rounded-xl px-3 py-3 text-left transition ${
                   index === activeIndex
-                    ? "bg-amber-300/15 text-white"
-                    : "text-slate-200 hover:bg-white/10"
+                    ? "bg-brand-50 text-slate-900"
+                    : "text-slate-700 hover:bg-slate-50"
                 }`}
                 role="option"
                 aria-selected={index === activeIndex}
               >
                 <span className="text-sm font-semibold">{suggestion.label}</span>
                 {suggestion.name && suggestion.name !== suggestion.label ? (
-                  <span className="mt-1 text-xs text-slate-400">
+                  <span className="mt-1 text-xs text-slate-500">
                     {suggestion.name}
                   </span>
                 ) : null}
@@ -241,81 +243,86 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="grid gap-4 md:grid-cols-2">
-        <AutocompleteInput
-          label="Starting location"
-          placeholder="Austin, TX"
-          value={origin}
-          onChange={setOrigin}
-        />
-
-        <AutocompleteInput
-          label="Destination"
-          placeholder="Houston, TX"
-          value={destination}
-          onChange={setDestination}
-        />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <label className="space-y-2">
-          <span className="text-sm font-semibold text-slate-200">
-            Departure date and time
-          </span>
-          <input
-            required
-            type="datetime-local"
-            value={departureTime}
-            onChange={(event) => setDepartureTime(event.target.value)}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
+    <form
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel sm:p-6"
+      onSubmit={handleSubmit}
+    >
+      <div className="space-y-5">
+        <div className="grid gap-4 md:grid-cols-2">
+          <AutocompleteInput
+            label="Starting location"
+            placeholder="Austin, TX"
+            value={origin}
+            onChange={setOrigin}
           />
-        </label>
 
-        <label className="space-y-2">
-          <span className="text-sm font-semibold text-slate-200">
-            Checkpoint spacing
-          </span>
-          <div className="relative">
-            <input
-              min={10}
-              step={10}
-              type="number"
-              value={checkpointMiles}
-              onChange={(event) => setCheckpointMiles(Number(event.target.value))}
-              className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 pr-16 text-white outline-none transition focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
-            />
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-slate-300">
-              miles
+          <AutocompleteInput
+            label="Destination"
+            placeholder="Houston, TX"
+            value={destination}
+            onChange={setDestination}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <label className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Departure date and time
             </span>
-          </div>
-        </label>
+            <input
+              required
+              type="datetime-local"
+              value={departureTime}
+              onChange={(event) => setDepartureTime(event.target.value)}
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+            />
+          </label>
 
-        <label className="space-y-2">
-          <span className="text-sm font-semibold text-slate-200">
-            Rain sensitivity
-          </span>
-          <select
-            value={rainSensitivity}
-            onChange={(event) =>
-              setRainSensitivity(event.target.value as RainSensitivity)
-            }
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </label>
+          <label className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Checkpoint spacing
+            </span>
+            <div className="relative">
+              <input
+                min={10}
+                step={10}
+                type="number"
+                value={checkpointMiles}
+                onChange={(event) => setCheckpointMiles(Number(event.target.value))}
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-16 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              />
+              <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-slate-400">
+                miles
+              </span>
+            </div>
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Rain sensitivity
+            </span>
+            <select
+              value={rainSensitivity}
+              onChange={(event) =>
+                setRainSensitivity(event.target.value as RainSensitivity)
+              }
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
+        >
+          {loading ? "Checking the route..." : "Plan this drive"}
+        </button>
       </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-2xl bg-amber-400 px-5 py-3 text-base font-bold text-slate-950 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-amber-200 sm:w-auto"
-      >
-        {loading ? "Checking the route..." : "Plan this drive"}
-      </button>
     </form>
   );
 }

@@ -13,67 +13,51 @@ const conditionIcon: Record<string, string> = {
   Rain: "🌧️",
   Storm: "⛈️",
   Snow: "❄️",
-  Unknown: "🧭"
+  Unknown: "•"
 };
 
-const riskBorder: Record<WeatherCheckpoint["riskLevel"], string> = {
-  safe: "border-emerald-300/20 bg-emerald-400/10",
-  possible: "border-amber-300/20 bg-amber-400/10",
-  likely: "border-sky-300/20 bg-sky-400/10",
-  severe: "border-rose-300/20 bg-rose-500/10"
+const riskDot: Record<WeatherCheckpoint["riskLevel"], string> = {
+  safe: "bg-emerald-500",
+  possible: "bg-amber-500",
+  likely: "bg-orange-500",
+  severe: "bg-rose-500"
 };
 
 function WeatherCheckpointCard({ checkpoint }: WeatherCheckpointCardProps) {
   return (
-    <article className={`rounded-3xl border p-4 ${riskBorder[checkpoint.riskLevel]}`}>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-slate-200/70">
-            Mile {checkpoint.distanceMiles.toFixed(0)}
-          </p>
-          <h3 className="mt-2 text-xl font-black text-white">
-            {conditionIcon[checkpoint.condition] ?? "🧭"} {checkpoint.condition}
-          </h3>
-          <p className="mt-1 text-sm text-slate-100/85">
-            {checkpoint.arrivalTimeLabel}
-          </p>
-        </div>
-        <div className="rounded-2xl bg-slate-950/30 px-3 py-2 text-right">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-300">Risk</p>
-          <p className="text-lg font-black capitalize text-white">
-            {checkpoint.riskLevel}
-          </p>
-        </div>
+    <article className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_88px_88px_120px] items-center gap-3 border-t border-slate-200 px-4 py-4 text-sm text-slate-700 first:border-t-0">
+      <div className="min-w-0">
+        <p className="font-semibold text-slate-900">
+          {checkpoint.distanceMiles.toFixed(0)} mi
+        </p>
+        <p className="truncate text-xs text-slate-500">{checkpoint.arrivalTimeLabel}</p>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl bg-slate-950/25 p-3">
-          <p className="text-xs uppercase tracking-[0.16em] text-slate-300">
-            Temperature
-          </p>
-          <p className="mt-1 text-lg font-bold text-white">
-            {checkpoint.temperature.toFixed(0)}°F
-          </p>
-        </div>
-        <div className="rounded-2xl bg-slate-950/25 p-3">
-          <p className="text-xs uppercase tracking-[0.16em] text-slate-300">
-            Rain chance
-          </p>
-          <p className="mt-1 text-lg font-bold text-white">
-            {checkpoint.precipitationProbability}%
-          </p>
-        </div>
-        <div className="rounded-2xl bg-slate-950/25 p-3">
-          <p className="text-xs uppercase tracking-[0.16em] text-slate-300">
-            Coordinates
-          </p>
-          <p className="mt-1 text-sm font-semibold text-white">
-            {checkpoint.lat.toFixed(2)}, {checkpoint.lng.toFixed(2)}
-          </p>
-        </div>
+      <div className="min-w-0">
+        <p className="truncate font-medium text-slate-900">
+          {conditionIcon[checkpoint.condition] ?? "•"} {checkpoint.condition}
+        </p>
+        <p className="truncate text-xs text-slate-500">{checkpoint.advice}</p>
       </div>
 
-      <p className="mt-4 text-sm text-slate-100">{checkpoint.advice}</p>
+      <div>
+        <p className="font-semibold text-slate-900">{checkpoint.temperature.toFixed(0)}°F</p>
+        <p className="text-xs text-slate-500">Temp</p>
+      </div>
+
+      <div>
+        <p className="font-semibold text-slate-900">
+          {checkpoint.precipitationProbability}%
+        </p>
+        <p className="text-xs text-slate-500">Chance</p>
+      </div>
+
+      <div className="flex items-center gap-2 justify-self-start rounded-full border border-slate-200 px-3 py-1.5">
+        <span className={`h-2.5 w-2.5 rounded-full ${riskDot[checkpoint.riskLevel]}`} />
+        <span className="text-sm font-medium capitalize text-slate-700">
+          {checkpoint.riskLevel}
+        </span>
+      </div>
     </article>
   );
 }

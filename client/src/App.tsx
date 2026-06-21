@@ -45,44 +45,69 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-road-gradient text-slate-100">
-      <div className="road-grid min-h-screen">
-        <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-          <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.08] shadow-glow backdrop-blur">
-            <div className="grid gap-6 p-6 lg:grid-cols-[1.15fr_0.85fr] lg:p-8">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
-                  <span>RoadCast</span>
-                  <span className="text-amber-300">Route-weather planner</span>
-                </div>
-                <div className="space-y-3">
-                  <h1 className="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl">
-                    See where rain could catch your cargo before you hit the road.
-                  </h1>
-                  <p className="max-w-2xl text-base text-slate-200/90 sm:text-lg">
-                    Plan a drive, sample the forecast along the route, and spot the
-                    moments when the truck bed may need a cover.
-                  </p>
-                </div>
-                <TripForm onSubmit={handleSubmit} loading={loading} />
-              </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-2xl font-semibold tracking-tight text-brand-600">
+              RoadCast
+            </a>
+            <span className="hidden text-sm text-slate-500 md:inline">
+              Route-weather planner
+            </span>
+          </div>
+          <nav className="flex items-center gap-6 text-sm font-medium text-slate-600">
+            <a
+              href="#plan-a-trip"
+              className="border-b-2 border-brand-600 pb-1 text-brand-600"
+            >
+              Plan a trip
+            </a>
+            <a href="#about" className="transition hover:text-slate-900">
+              About
+            </a>
+          </nav>
+        </div>
+      </header>
 
-              <SummaryCard summary={trip?.summary ?? null} loading={loading} />
+      <main className="mx-auto flex w-full max-w-[1500px] flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+        <section id="plan-a-trip" className="grid gap-6 xl:grid-cols-[1.55fr_0.9fr]">
+          <div className="space-y-5">
+            <div className="space-y-3">
+              <p className="text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
+                Route-weather planner
+              </p>
+              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+                Know where rain could slow you down.
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-slate-600">
+                We check the forecast along your route so you know when to cover
+                your load or change plans.
+              </p>
             </div>
-          </section>
 
-          {error ? (
-            <section className="rounded-3xl border border-rose-300/20 bg-rose-500/10 p-4 text-rose-100">
-              {error}
-            </section>
-          ) : null}
+            <TripForm onSubmit={handleSubmit} loading={loading} />
+          </div>
 
-          <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <RouteMap route={trip?.route ?? null} checkpoints={trip?.checkpoints ?? []} />
-            <WeatherTimeline checkpoints={trip?.checkpoints ?? []} loading={loading} />
+          <SummaryCard summary={trip?.summary ?? null} loading={loading} />
+        </section>
+
+        {error ? (
+          <section className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
           </section>
-        </main>
-      </div>
+        ) : null}
+
+        <section className="grid gap-6 xl:grid-cols-[1.65fr_0.95fr]">
+          <RouteMap route={trip?.route ?? null} checkpoints={trip?.checkpoints ?? []} />
+          <WeatherTimeline checkpoints={trip?.checkpoints ?? []} loading={loading} />
+        </section>
+
+        <section id="about" className="pb-8 text-sm text-slate-500">
+          RoadCast helps drivers spot rain risk before departure, especially when
+          cargo is exposed to the weather.
+        </section>
+      </main>
     </div>
   );
 }

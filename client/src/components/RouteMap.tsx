@@ -16,18 +16,32 @@ interface RouteMapProps {
 }
 
 const markerHtmlByRisk = {
-  safe: "#22c55e",
+  safe: "#16a34a",
   possible: "#f59e0b",
-  likely: "#38bdf8",
+  likely: "#f97316",
   severe: "#f43f5e"
 };
+
+const startIcon = L.divIcon({
+  className: "",
+  html: '<div style="background:#16a34a;width:18px;height:18px;border:3px solid white;border-radius:999px;box-shadow:0 2px 10px rgba(15,23,42,0.22)"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9]
+});
+
+const destinationIcon = L.divIcon({
+  className: "",
+  html: '<div style="background:#ef4444;width:18px;height:18px;border:3px solid white;border-radius:999px;box-shadow:0 2px 10px rgba(15,23,42,0.22)"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9]
+});
 
 const buildMarkerIcon = (riskLevel: WeatherCheckpoint["riskLevel"]) =>
   L.divIcon({
     className: "",
-    html: `<div style="background:${markerHtmlByRisk[riskLevel]};width:16px;height:16px;border:3px solid white;border-radius:999px;box-shadow:0 6px 18px rgba(15,23,42,0.45)"></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
+    html: `<div style="background:${markerHtmlByRisk[riskLevel]};width:10px;height:10px;border:2px solid white;border-radius:999px;box-shadow:0 2px 8px rgba(15,23,42,0.18)"></div>`,
+    iconSize: [10, 10],
+    iconAnchor: [5, 5]
   });
 
 const defaultCenter: [number, number] = [39.5, -98.35];
@@ -54,14 +68,14 @@ function RouteMap({ route, checkpoints }: RouteMapProps) {
       : defaultCenter;
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/45 p-3 shadow-glow">
-      <div className="mb-3 flex items-center justify-between px-2 pt-2">
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Map</p>
-          <h2 className="text-xl font-black text-white">Route + forecast stops</h2>
+          <p className="text-sm font-medium text-slate-500">Route overview</p>
+          <h2 className="text-xl font-semibold text-slate-900">Map and forecast stops</h2>
         </div>
       </div>
-      <div className="h-[420px] overflow-hidden rounded-[1.5rem]">
+      <div className="h-[520px] overflow-hidden rounded-2xl border border-slate-200">
         <MapContainer center={center as [number, number]} zoom={5} scrollWheelZoom>
           <FitRouteBounds route={route} />
           <TileLayer
@@ -72,8 +86,20 @@ function RouteMap({ route, checkpoints }: RouteMapProps) {
           {route ? (
             <Polyline
               positions={route.coordinates}
-              pathOptions={{ color: "#f59e0b", weight: 5, opacity: 0.9 }}
+              pathOptions={{ color: "#64748b", weight: 4, opacity: 0.8 }}
             />
+          ) : null}
+
+          {route?.coordinates[0] ? (
+            <Marker position={route.coordinates[0]} icon={startIcon}>
+              <Popup>Trip start</Popup>
+            </Marker>
+          ) : null}
+
+          {route?.coordinates.at(-1) ? (
+            <Marker position={route.coordinates.at(-1)!} icon={destinationIcon}>
+              <Popup>Destination</Popup>
+            </Marker>
           ) : null}
 
           {checkpoints.map((checkpoint) => (

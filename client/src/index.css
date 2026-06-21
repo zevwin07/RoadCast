@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  color: #e5eef5;
-  background:
-    radial-gradient(circle at top, rgba(245, 158, 11, 0.15), transparent 26%),
-    linear-gradient(180deg, #061018 0%, #0f1f2d 55%, #142739 100%);
+  color: #0f172a;
+  background: #f8fafc;
   font-family:
-    "Trebuchet MS",
+    Inter,
+    system-ui,
+    -apple-system,
     "Segoe UI",
     sans-serif;
 }
@@ -21,6 +21,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: #f8fafc;
 }
 
 #root {
@@ -30,12 +31,5 @@ body {
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 1.5rem;
-}
-
-.road-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 30px 30px;
+  border-radius: 1rem;
 }
