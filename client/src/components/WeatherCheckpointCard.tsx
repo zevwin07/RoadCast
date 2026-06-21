@@ -35,7 +35,7 @@ function WeatherCheckpointCard({ checkpoint }: WeatherCheckpointCardProps) {
             {conditionIcon[checkpoint.condition] ?? "🧭"} {checkpoint.condition}
           </h3>
           <p className="mt-1 text-sm text-slate-100/85">
-            {new Date(checkpoint.estimatedArrivalTime).toLocaleString()}
+            {checkpoint.arrivalTimeLabel}
           </p>
         </div>
         <div className="rounded-2xl bg-slate-950/30 px-3 py-2 text-right">

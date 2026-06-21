@@ -114,6 +114,8 @@ Request body:
   "origin": "Austin, TX",
   "destination": "Houston, TX",
   "departureTime": "2026-06-21T09:00",
+  "departureTimeZone": "America/Chicago",
+  "departureTimeZoneOffsetMinutes": 300,
   "checkpointMiles": 50,
   "rainSensitivity": "medium"
 }
@@ -154,6 +156,9 @@ Response shape:
       "lng": -97.31,
       "distanceMiles": 50,
       "estimatedArrivalTime": "2026-06-21T15:10:00.000Z",
+      "arrivalTimeLabel": "6/21/2026, 10:10 AM CDT",
+      "timeZone": "America/Chicago",
+      "timeZoneAbbreviation": "CDT",
       "temperature": 82,
       "precipitationProbability": 45,
       "condition": "Cloudy",
@@ -168,7 +173,9 @@ Response shape:
 
 - U.S. routes only. If a route leaves National Weather Service coverage, RoadCast returns a friendly message explaining that only United States trips are supported.
 - Checkpoints are generated from the route geometry at the chosen spacing, with the destination always included as the final checkpoint.
+- The departure `datetime-local` value is treated as the user's local time. The frontend sends the raw value plus the browser timezone and selected-date offset so the server does not shift it accidentally.
 - Arrival times are estimated proportionally from the full route duration returned by OpenRouteService.
+- Checkpoint display times include a timezone abbreviation and update as the route crosses time zones.
 - Each checkpoint is resolved through the NWS `/points/{lat},{lon}` endpoint to determine its forecast grid and hourly forecast URL.
 - Hourly NWS forecast responses are cached by grid ID for 30 minutes, so multiple checkpoints in the same grid reuse the same forecast payload.
 - Risk scoring rules:

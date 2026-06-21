@@ -11,6 +11,7 @@ interface NwsPointResponse {
     gridX?: number;
     gridY?: number;
     forecastHourly?: string;
+    timeZone?: string;
   };
 }
 
@@ -102,12 +103,14 @@ export async function getForecastForTime(lat: number, lng: number, isoTime: stri
   const gridX = pointData.properties?.gridX;
   const gridY = pointData.properties?.gridY;
   const forecastHourlyUrl = pointData.properties?.forecastHourly;
+  const timeZone = pointData.properties?.timeZone;
 
   if (
     !gridId ||
     typeof gridX !== "number" ||
     typeof gridY !== "number" ||
-    !forecastHourlyUrl
+    !forecastHourlyUrl ||
+    !timeZone
   ) {
     throw new OutsideUnitedStatesError();
   }
@@ -138,6 +141,7 @@ export async function getForecastForTime(lat: number, lng: number, isoTime: stri
   return {
     temperature: period.temperature ?? 0,
     precipitationProbability: period.probabilityOfPrecipitation?.value ?? 0,
-    condition: period.shortForecast || "Unknown"
+    condition: period.shortForecast || "Unknown",
+    timeZone
   };
 }

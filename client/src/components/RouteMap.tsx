@@ -86,7 +86,7 @@ function RouteMap({ route, checkpoints }: RouteMapProps) {
                 <div className="space-y-1">
                   <strong>{checkpoint.condition}</strong>
                   <div>{checkpoint.distanceMiles.toFixed(0)} miles into trip</div>
-                  <div>{new Date(checkpoint.estimatedArrivalTime).toLocaleString()}</div>
+                  <div>{checkpoint.arrivalTimeLabel}</div>
                   <div>{checkpoint.precipitationProbability}% rain chance</div>
                 </div>
               </Popup>

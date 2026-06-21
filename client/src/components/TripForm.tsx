@@ -12,8 +12,12 @@ interface TripFormProps {
 
 const defaultDeparture = () => {
   const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  return now.toISOString().slice(0, 16);
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, "0");
+  const day = `${now.getDate()}`.padStart(2, "0");
+  const hours = `${now.getHours()}`.padStart(2, "0");
+  const minutes = `${now.getMinutes()}`.padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
 interface AutocompleteInputProps {
@@ -223,10 +227,14 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const departureDate = new Date(departureTime);
+
     await onSubmit({
       origin,
       destination,
       departureTime,
+      departureTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      departureTimeZoneOffsetMinutes: departureDate.getTimezoneOffset(),
       checkpointMiles,
       rainSensitivity
     });

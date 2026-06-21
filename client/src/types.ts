@@ -4,6 +4,8 @@ export interface TripRequest {
   origin: string;
   destination: string;
   departureTime: string;
+  departureTimeZone: string;
+  departureTimeZoneOffsetMinutes: number;
   checkpointMiles: number;
   rainSensitivity: RainSensitivity;
 }
@@ -30,6 +32,9 @@ export interface WeatherCheckpoint {
   lng: number;
   distanceMiles: number;
   estimatedArrivalTime: string;
+  arrivalTimeLabel: string;
+  timeZone: string;
+  timeZoneAbbreviation: string;
   temperature: number;
   precipitationProbability: number;
   condition: string;

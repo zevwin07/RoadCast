@@ -19,8 +19,97 @@ interface TripRequestBody {
   origin: string;
   destination: string;
   departureTime: string;
+  departureTimeZone?: string;
+  departureTimeZoneOffsetMinutes?: number;
   checkpointMiles?: number;
   rainSensitivity?: "low" | "medium" | "high";
+}
+
+function parseDatetimeLocal(value: string) {
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value.trim());
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day, hour, minute] = match;
+
+  return {
+    year: Number(year),
+    month: Number(month),
+    day: Number(day),
+    hour: Number(hour),
+    minute: Number(minute)
+  };
+}
+
+function convertLocalDateTimeToUtc(
+  localDateTime: string,
+  offsetMinutes: number
+) {
+  const parts = parseDatetimeLocal(localDateTime);
+
+  if (!parts) {
+    return null;
+  }
+
+  return new Date(
+    Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute) +
+      offsetMinutes * 60 * 1000
+  );
+}
+
+function formatLocalDateTimeLabel(localDateTime: string) {
+  const parts = parseDatetimeLocal(localDateTime);
+
+  if (!parts) {
+    return localDateTime;
+  }
+
+  const displayDate = new Date(
+    Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute)
+  );
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "numeric",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "UTC"
+  }).format(displayDate);
+}
+
+function getTimeZoneAbbreviation(date: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short"
+  }).formatToParts(date);
+
+  return (
+    parts.find((part) => part.type === "timeZoneName")?.value ?? timeZone
+  );
+}
+
+function formatCheckpointArrivalLabel(date: Date, timeZone: string) {
+  const formatted = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    month: "numeric",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  }).format(date);
+
+  const timeZoneAbbreviation = getTimeZoneAbbreviation(date, timeZone);
+
+  return {
+    arrivalTimeLabel: `${formatted} ${timeZoneAbbreviation}`,
+    timeZoneAbbreviation
+  };
 }
 
 export const tripRouter = Router();
@@ -31,6 +120,8 @@ tripRouter.post("/", async (request, response, next) => {
       origin,
       destination,
       departureTime,
+      departureTimeZone,
+      departureTimeZoneOffsetMinutes,
       checkpointMiles = 50,
       rainSensitivity = "medium"
     } = request.body as TripRequestBody;
@@ -56,10 +147,20 @@ tripRouter.post("/", async (request, response, next) => {
       return;
     }
 
-    const departureDate = new Date(departureTime);
-    if (Number.isNaN(departureDate.getTime())) {
+    if (typeof departureTimeZoneOffsetMinutes !== "number") {
       response.status(400).json({
-        error: "departureTime must be a valid ISO date-time string."
+        error: "departureTimeZoneOffsetMinutes is required."
+      });
+      return;
+    }
+
+    const departureDate = convertLocalDateTimeToUtc(
+      departureTime,
+      departureTimeZoneOffsetMinutes
+    );
+    if (!departureDate || Number.isNaN(departureDate.getTime())) {
+      response.status(400).json({
+        error: "departureTime must be a valid datetime-local value."
       });
       return;
     }
@@ -93,6 +194,9 @@ tripRouter.post("/", async (request, response, next) => {
       lng: number;
       distanceMiles: number;
       estimatedArrivalTime: string;
+      arrivalTimeLabel: string;
+      timeZone: string;
+      timeZoneAbbreviation: string;
       temperature: number;
       precipitationProbability: number;
       condition: string;
@@ -114,9 +218,30 @@ tripRouter.post("/", async (request, response, next) => {
       });
 
       const condition = getWeatherConditionLabel(forecast.condition);
+      const checkpointDate = new Date(checkpoint.estimatedArrivalTime);
+      const displayTimeZone =
+        checkpoint.distanceMiles === 0 && departureTimeZone
+          ? departureTimeZone
+          : forecast.timeZone;
+      const { arrivalTimeLabel, timeZoneAbbreviation } =
+        checkpoint.distanceMiles === 0 && departureTimeZone
+          ? {
+              arrivalTimeLabel: `${formatLocalDateTimeLabel(departureTime)} ${getTimeZoneAbbreviation(
+                departureDate,
+                departureTimeZone
+              )}`,
+              timeZoneAbbreviation: getTimeZoneAbbreviation(
+                departureDate,
+                departureTimeZone
+              )
+            }
+          : formatCheckpointArrivalLabel(checkpointDate, displayTimeZone);
 
       enrichedCheckpoints.push({
         ...checkpoint,
+        arrivalTimeLabel,
+        timeZone: displayTimeZone,
+        timeZoneAbbreviation,
         temperature: forecast.temperature,
         precipitationProbability: forecast.precipitationProbability,
         condition,
