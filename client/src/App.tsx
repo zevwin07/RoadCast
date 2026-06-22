@@ -88,7 +88,7 @@ function App() {
         <section id="plan-a-trip" className="grid gap-6 xl:grid-cols-[1.55fr_0.9fr]">
           <div className="space-y-5">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_0.9fr]">
-              <div className="space-y-3 sm:pl-2">
+              <div className="space-y-3 sm:pl-1">
                 <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-[2.75rem]">
                   Know where rain could slow you down.
                 </h1>
