@@ -29,7 +29,7 @@ const riskTextTone: Record<TripSummary["overallRisk"], string> = {
 function SummaryCard({ loading, summary }: SummaryCardProps) {
   if (loading) {
     return (
-      <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
+      <aside className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-panel">
         <div className="animate-pulse space-y-4">
           <div className="h-4 w-32 rounded bg-slate-200" />
           <div className="h-12 w-3/4 rounded bg-slate-200" />
@@ -42,7 +42,7 @@ function SummaryCard({ loading, summary }: SummaryCardProps) {
 
   if (!summary) {
     return (
-      <aside className="flex min-h-[280px] flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
+      <aside className="flex min-h-[240px] flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-panel">
         <div className="space-y-3">
           <p className="text-sm font-medium text-slate-500">Trip summary</p>
           <h2 className="text-2xl font-semibold text-slate-900">
@@ -53,7 +53,7 @@ function SummaryCard({ loading, summary }: SummaryCardProps) {
             where rain may become a problem.
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+        <div className="rounded-xl border border-slate-200/70 bg-slate-50 p-4 text-sm text-slate-600">
           Best for open truck beds, roof racks, trailers, and weather-sensitive
           cargo.
         </div>
@@ -62,27 +62,27 @@ function SummaryCard({ loading, summary }: SummaryCardProps) {
   }
 
   return (
-    <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
-      <div className="space-y-6">
+    <aside className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-panel">
+      <div className="space-y-4">
         <div>
           <p className="text-sm font-medium text-slate-500">Trip summary</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">
+          <h2 className="mt-2 text-xl font-semibold text-slate-900">
             {riskCopy[summary.overallRisk]}
           </h2>
         </div>
 
-        <div className="grid gap-4 border-y border-slate-200 py-5 sm:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-4 border-y border-slate-200/80 py-4 sm:grid-cols-[1.35fr_0.8fr_0.8fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
               Overall risk
             </p>
             <div className="mt-2 flex items-center gap-3">
               <span className={`h-2.5 w-2.5 rounded-full ${riskTone[summary.overallRisk]}`} />
-              <p className={`text-3xl font-semibold capitalize ${riskTextTone[summary.overallRisk]}`}>
+              <p className={`text-2xl font-semibold capitalize ${riskTextTone[summary.overallRisk]}`}>
                 {summary.overallRisk}
               </p>
             </div>
-            <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">
+            <p className="mt-2 max-w-sm text-sm leading-7 text-slate-600">
               {summary.recommendation}
             </p>
           </div>
@@ -91,7 +91,7 @@ function SummaryCard({ loading, summary }: SummaryCardProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
               Distance
             </p>
-            <p className="mt-3 text-4xl font-semibold text-slate-900">
+            <p className="mt-3 text-[28px] font-semibold leading-none text-slate-900">
               {summary.totalDistanceMiles.toFixed(0)} mi
             </p>
           </div>
@@ -100,7 +100,7 @@ function SummaryCard({ loading, summary }: SummaryCardProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
               Drive time
             </p>
-            <p className="mt-3 text-4xl font-semibold text-slate-900">
+            <p className="mt-3 text-[28px] font-semibold leading-none text-slate-900">
               {summary.totalDurationMinutes.toFixed(0)} min
             </p>
           </div>

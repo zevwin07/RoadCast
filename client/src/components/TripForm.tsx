@@ -166,7 +166,7 @@ function AutocompleteInput({
               setActiveIndex(-1);
             }
           }}
-          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="h-14 w-full rounded-2xl border border-slate-300/90 bg-white px-4 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
           placeholder={placeholder}
           autoComplete="off"
           role="combobox"
@@ -184,7 +184,7 @@ function AutocompleteInput({
         {open && suggestions.length > 0 ? (
           <div
             id={listId}
-            className="absolute z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
+            className="absolute z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-lg"
             role="listbox"
           >
             {suggestions.map((suggestion, index) => (
@@ -195,7 +195,7 @@ function AutocompleteInput({
                   event.preventDefault();
                   handleSelect(suggestion);
                 }}
-                className={`flex w-full flex-col rounded-xl px-3 py-3 text-left transition ${
+                className={`flex w-full flex-col rounded-2xl px-3 py-3 text-left transition ${
                   index === activeIndex
                     ? "bg-brand-50 text-slate-900"
                     : "text-slate-700 hover:bg-slate-50"
@@ -244,10 +244,10 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
 
   return (
     <form
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel sm:p-6"
+      className="rounded-[26px] border border-slate-200/80 bg-white p-7 shadow-panel"
       onSubmit={handleSubmit}
     >
-      <div className="space-y-5">
+      <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <AutocompleteInput
             label="Starting location"
@@ -264,7 +264,7 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid items-end gap-4 md:grid-cols-[1fr_1fr_1fr]">
           <label className="space-y-2">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
               Departure date and time
@@ -274,7 +274,7 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
               type="datetime-local"
               value={departureTime}
               onChange={(event) => setDepartureTime(event.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              className="h-14 w-full rounded-2xl border border-slate-300/90 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
             />
           </label>
 
@@ -289,7 +289,7 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
                 type="number"
                 value={checkpointMiles}
                 onChange={(event) => setCheckpointMiles(Number(event.target.value))}
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-16 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                className="h-14 w-full rounded-2xl border border-slate-300/90 bg-white px-4 pr-16 text-[15px] text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
               />
               <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-slate-400">
                 miles
@@ -306,7 +306,7 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
               onChange={(event) =>
                 setRainSensitivity(event.target.value as RainSensitivity)
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              className="h-14 w-full rounded-2xl border border-slate-300/90 bg-white px-4 text-[15px] text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -318,7 +318,7 @@ function TripForm({ loading, onSubmit }: TripFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl bg-brand-600 px-6 text-base font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto sm:min-w-[170px]"
         >
           {loading ? "Checking the route..." : "Plan this drive"}
         </button>

@@ -68,14 +68,11 @@ function RouteMap({ route, checkpoints }: RouteMapProps) {
       : defaultCenter;
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-500">Route overview</p>
-          <h2 className="text-xl font-semibold text-slate-900">Map and forecast stops</h2>
-        </div>
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-panel">
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-slate-900">Route overview</h2>
       </div>
-      <div className="h-[520px] overflow-hidden rounded-2xl border border-slate-200">
+      <div className="h-[520px] overflow-hidden rounded-2xl border border-slate-200/80">
         <MapContainer center={center as [number, number]} zoom={5} scrollWheelZoom>
           <FitRouteBounds route={route} />
           <TileLayer
